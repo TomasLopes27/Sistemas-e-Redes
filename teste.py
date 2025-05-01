@@ -5,7 +5,7 @@ try:
         host="localhost",
         database="tinyconcerts",
         user="postgres",
-        password="saramago2" 
+        password="password" 
     )
     
 
