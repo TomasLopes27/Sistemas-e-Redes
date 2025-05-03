@@ -1,5 +1,10 @@
-from app import create_app
-app = create_app()
+from flask import Flask
+from routes.auth_routes import auth_bp
+
+app = Flask(__name__)
+app.register_blueprint(auth_bp)
+app.config["SECRET_KEY"] = "asdfe"
+
 
 if __name__ == "__main__":
     app.run(debug=True)
