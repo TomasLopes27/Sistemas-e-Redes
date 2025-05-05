@@ -4,10 +4,11 @@ import jwt
 import datetime
 from flask import current_app
 import bcrypt
-
+from auth_utils import token_required
 
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/api")
+
 
 @auth_bp.route("/register", methods=["POST"])
 def register():
@@ -32,6 +33,7 @@ def register():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
+
 @auth_bp.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
@@ -58,3 +60,12 @@ def login():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+@auth_bp.route("/profile", methods=["GET"])
+@token_required
+def profile(user):
+    return jsonify({
+        "name": user[0],
+        "email": user[1]
+    }), 200
