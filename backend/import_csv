@@ -1,0 +1,41 @@
+import pandas as pd
+from db import get_connection
+
+# Lê o ficheiro CSV
+df = pd.read_csv(r"C:\Users\tomas\Desktop\Redes\Sistemas-e-Redes\backend\tinyConcertsALL.csv")
+
+# Mostra as primeiras linhas para confirmar
+print(df.head())
+
+# Verifica se os nomes das colunas estão corretos
+# Exemplo esperado:
+# title, url, artist, genre, release_date
+
+def insert_concerts():
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+
+        for _, row in df.iterrows():
+            title = row.get("title", "Sem título")
+            artist = row.get("artist", None)
+            genre = row.get("genre", None)
+            release_date = row.get("published_at", None)
+            url = f"https://www.youtube.com/watch?v={row['video_id']}"  # construir a URL
+
+            cur.execute("""
+                INSERT INTO concerts (title, url, artist, genre, release_date)
+                VALUES (%s, %s, %s, %s, %s)
+            """, (title, url, artist, genre, release_date))
+
+        conn.commit()
+        cur.close()
+        conn.close()
+        print("Concertos inseridos com sucesso!")
+
+    except Exception as e:
+        print("Erro ao inserir dados:", e)
+
+
+if __name__ == "__main__":
+    insert_concerts()

@@ -23,8 +23,8 @@ def token_required(f):
             # Vai buscar o utilizador à BD
             conn = get_connection()
             cur = conn.cursor()
-            cur.execute("SELECT name, email FROM users WHERE id = %s", (user_id,))
-            user = cur.fetchone()
+            cur.execute("SELECT name, email, usertype FROM users WHERE id = %s", (user_id,))
+            user = cur.fetchone()  # (name, email, usertype)
             cur.close()
             conn.close()
 
