@@ -7,9 +7,7 @@ df = pd.read_csv(r"C:\Users\tomas\Desktop\Redes\Sistemas-e-Redes\backend\tinyCon
 # Mostra as primeiras linhas para confirmar
 print(df.head())
 
-# Verifica se os nomes das colunas estão corretos
-# Exemplo esperado:
-# title, url, artist, genre, release_date
+
 
 def insert_concerts():
     try:
@@ -21,7 +19,7 @@ def insert_concerts():
             artist = row.get("artist", None)
             genre = row.get("genre", None)
             release_date = row.get("published_at", None)
-            url = f"https://www.youtube.com/watch?v={row['video_id']}"  # construir a URL
+            url = f"https://www.youtube.com/watch?v={row['video_id']}"  
 
             cur.execute("""
                 INSERT INTO concerts (title, url, artist, genre, release_date)
