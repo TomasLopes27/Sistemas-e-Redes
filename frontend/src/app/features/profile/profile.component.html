@@ -1,0 +1,10 @@
+<div class="profile-container">
+  <h2>Perfil</h2>
+
+  <div *ngIf="error">{{ error }}</div>
+
+  <div *ngIf="!error">
+    <p><strong>Nome:</strong> {{ name }}</p>
+    <p><strong>Email:</strong> {{ email }}</p>
+  </div>
+</div>

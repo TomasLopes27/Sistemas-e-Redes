@@ -6,5 +6,5 @@ def get_connection():
         host="localhost",
         database="tinyconcerts",
         user="postgres",
-        password="password"
+        password="saramago2"
     )
