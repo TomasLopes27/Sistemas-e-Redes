@@ -9,9 +9,8 @@ def token_required(f):
     def decorated(*args, **kwargs):
         token = None
 
-        # Verifica o header Authorization
         if "Authorization" in request.headers:
-            token = request.headers["Authorization"].split(" ")[1]  # "Bearer <token>"
+            token = request.headers["Authorization"].split(" ")[1]
 
         if not token:
             return jsonify({"error": "Token não fornecido"}), 401
@@ -20,16 +19,17 @@ def token_required(f):
             data = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])
             user_id = data["user_id"]
 
-            # Vai buscar o utilizador à BD
             conn = get_connection()
             cur = conn.cursor()
-            cur.execute("SELECT name, email, usertype FROM users WHERE id = %s", (user_id,))
-            user = cur.fetchone()  # (name, email, usertype)
+            cur.execute("SELECT id, name, email, usertype FROM users WHERE id = %s", (user_id,))
+            user = cur.fetchone()
             cur.close()
             conn.close()
 
             if not user:
                 return jsonify({"error": "Utilizador não encontrado"}), 404
+
+            # user = (id, name, email, usertype)
 
         except jwt.ExpiredSignatureError:
             return jsonify({"error": "Token expirado"}), 401
@@ -41,3 +41,4 @@ def token_required(f):
         return f(user, *args, **kwargs)
 
     return decorated
+

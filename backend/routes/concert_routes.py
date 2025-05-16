@@ -36,7 +36,7 @@ def list_concerts():
 @concert_bp.route("/", methods=["POST"])
 @token_required
 def create_concert(user):
-    if not user or user[0] != "admin":  # ajusta para o teu caso (0 para admin, talvez?)
+    if not user or user[0] != "admin":  # ajusta para o teu caso (0 para admin)
         return jsonify({"error": "Acesso negado"}), 403
 
     data = request.get_json()
