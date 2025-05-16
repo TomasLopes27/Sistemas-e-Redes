@@ -36,8 +36,8 @@ def list_concerts():
 @concert_bp.route("/", methods=["POST"])
 @token_required
 def create_concert(user):
-    if not user or user[0] != "admin":  # ajusta para o teu caso (0 para admin)
-        return jsonify({"error": "Acesso negado"}), 403
+    if user[3] != 0:
+        return jsonify({"error": "Acesso negado: apenas admin"}), 403
 
     data = request.get_json()
     try:
@@ -86,8 +86,8 @@ def get_concert(concert_id):
 @concert_bp.route("/<int:concert_id>", methods=["PUT"])
 @token_required
 def update_concert(user, concert_id):
-    if not user or user[0] != "admin":
-        return jsonify({"error": "Acesso negado"}), 403
+    if user[3] != 0:
+        return jsonify({"error": "Acesso negado: apenas admin"}), 403
 
     data = request.get_json()
     try:
@@ -110,8 +110,8 @@ def update_concert(user, concert_id):
 @concert_bp.route("/<int:concert_id>", methods=["DELETE"])
 @token_required
 def delete_concert(user, concert_id):
-    if not user or user[0] != "admin":
-        return jsonify({"error": "Acesso negado"}), 403
+    if user[3] != 0:
+        return jsonify({"error": "Acesso negado: apenas admin"}), 403
 
     try:
         conn = get_connection()

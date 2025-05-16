@@ -108,7 +108,88 @@ def get_comments(concert_id):
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+# ➕ POST /api/concerts/<id>/favorite - toggle favorito
+@interaction_bp.route("/<int:concert_id>/favorite", methods=["POST"])
+@token_required
+def toggle_favorite(user, concert_id):
+    user_id = get_user_id(user)
+    conn = get_connection(); cur = conn.cursor()
+    cur.execute("SELECT 1 FROM favorites WHERE user_id=%s AND concert_id=%s", (user_id, concert_id))
+    if cur.fetchone():
+        cur.execute("DELETE FROM favorites WHERE user_id=%s AND concert_id=%s", (user_id, concert_id))
+        message = "Removido dos favoritos"
+    else:
+        cur.execute("INSERT INTO favorites (user_id, concert_id) VALUES (%s,%s)", (user_id, concert_id))
+        message = "Adicionado aos favoritos"
+    conn.commit(); cur.close(); conn.close()
+    return jsonify({"message": message}), 200
 
+# 🔢 GET /api/users/favorites - lista favoritos do user
+@interaction_bp.route("/users/favorites", methods=["GET"])
+@token_required
+def list_favorites(user):
+    user_id = get_user_id(user)
+    conn = get_connection(); cur = conn.cursor()
+    cur.execute("""
+      SELECT c.id, c.title, c.artist, c.release_date, c.url
+      FROM favorites f
+      JOIN concerts c ON f.concert_id = c.id
+      WHERE f.user_id = %s
+    """, (user_id,))
+    favs = [dict(zip(("id","title","artist","release_date","url"), row)) for row in cur.fetchall()]
+    cur.close(); conn.close()
+    return jsonify(favs), 200
+
+# 🚩 POST /api/concerts/<id>/report - enviar reporte
+@interaction_bp.route("/<int:concert_id>/report", methods=["POST"])
+@token_required
+def report_issue(user, concert_id):
+    user_id = get_user_id(user)
+    data = request.get_json()
+    issue = data.get("issue_type")
+    desc  = data.get("description","").strip()
+    if not issue:
+        return jsonify({"error":"Tipo de issue é obrigatório"}),400
+
+    conn = get_connection(); cur = conn.cursor()
+    cur.execute("""
+      INSERT INTO reports (user_id, concert_id, issue_type, description)
+      VALUES (%s,%s,%s,%s)
+    """, (user_id, concert_id, issue, desc))
+    conn.commit(); cur.close(); conn.close()
+    return jsonify({"message":"Report enviado. Obrigado pelo feedback!"}),201
+
+# 🗂️ GET /api/concerts/<id>/reports - (admin only) listar reports
+@interaction_bp.route("/<int:concert_id>/reports", methods=["GET"])
+@token_required
+def list_reports(user, concert_id):
+    # user[3] é o campo 'usertype'
+    if user[3] != 0:
+        return jsonify({"error":"Acesso negado: só admin"}), 403
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+      SELECT r.id, u.name, r.issue_type, r.description, r.created_at
+      FROM reports r
+      LEFT JOIN users u ON r.user_id = u.id
+      WHERE r.concert_id=%s
+      ORDER BY r.created_at DESC
+    """, (concert_id,))
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    reports = [{
+        "id":    r[0],
+        "user":  r[1],
+        "issue_type": r[2],
+        "description": r[3],
+        "created_at":  r[4]
+    } for r in rows]
+
+    return jsonify(reports), 200
 
 # Função utilitária para extrair o ID do utilizador
 def get_user_id(user_tuple):

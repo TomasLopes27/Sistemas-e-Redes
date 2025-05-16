@@ -10,7 +10,12 @@ def token_required(f):
         token = None
 
         if "Authorization" in request.headers:
-            token = request.headers["Authorization"].split(" ")[1]
+            parts = request.headers["Authorization"].split(" ")
+            print("DEBUG — Authorization header parts:", parts)
+            if len(parts) == 2 and parts[0] == "Bearer":
+                token = parts[1]
+            else:
+                print("DEBUG — Cabeçalho Authorization não está no formato 'Bearer <token>'")
 
         if not token:
             return jsonify({"error": "Token não fornecido"}), 401
@@ -29,11 +34,10 @@ def token_required(f):
             if not user:
                 return jsonify({"error": "Utilizador não encontrado"}), 404
 
-            # user = (id, name, email, usertype)
-
         except jwt.ExpiredSignatureError:
             return jsonify({"error": "Token expirado"}), 401
-        except jwt.InvalidTokenError:
+        except jwt.InvalidTokenError as e:
+            print("DEBUG — InvalidTokenError:", e)
             return jsonify({"error": "Token inválido"}), 401
         except Exception as e:
             return jsonify({"error": str(e)}), 500

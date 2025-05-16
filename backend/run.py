@@ -2,6 +2,8 @@ from flask import Flask
 from routes.auth_routes import auth_bp
 from routes.concert_routes import concert_bp
 from routes.concert_interactions import interaction_bp
+from routes.admin_users import admin_bp
+
 
 
 
