@@ -20,8 +20,24 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return localStorage.getItem('token');
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('token');
+    }
+    return null;
   }
+
+  getConcerts(): Observable<any> {
+    const token = this.getToken();
+    let headers = new HttpHeaders();
+
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    return this.http.get('/api/concerts', { headers });
+  }
+
+
 
   getProfile(): Observable<any> {
   const token = this.getToken();
@@ -29,13 +45,19 @@ export class AuthService {
   const headers = new HttpHeaders({
     Authorization: `Bearer ${token}`
   });
-
+  
   return this.http.get(`${this.apiUrl}/profile`, { headers });
 }
 
-  logout() {
+logout() {
+  if (typeof window !== 'undefined') {
     localStorage.removeItem('token');
   }
+}
+
+isAuthenticated(): boolean {
+  return !!this.getToken();
+}  
 
 }
 

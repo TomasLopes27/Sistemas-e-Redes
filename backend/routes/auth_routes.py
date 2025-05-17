@@ -66,6 +66,6 @@ def login():
 @token_required
 def profile(user):
     return jsonify({
-        "name": user[0],
-        "email": user[1]
+        "name": user[1],
+        "email": user[2]
     }), 200

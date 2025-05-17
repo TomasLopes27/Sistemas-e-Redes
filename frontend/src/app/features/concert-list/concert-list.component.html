@@ -1,0 +1,23 @@
+<h2>Concertos</h2>
+
+<div *ngIf="error">{{ error }}</div>
+
+<div *ngIf="concerts.length > 0; else loading">
+  <div *ngFor="let concert of concerts" class="concert-card">
+    <h3>{{ concert.title }}</h3>
+    <p><strong>Artista:</strong> {{ concert.artist }}</p>
+    <p><strong>Género:</strong> {{ concert.genre }}</p>
+    <p><strong>Data:</strong> {{ concert.release_date | date }}</p>
+    <iframe
+      width="360"
+      height="215"
+      [src]="'https://www.youtube.com/embed/' + concert.url"
+      frameborder="0"
+      allowfullscreen>
+    </iframe>
+  </div>
+</div>
+
+<ng-template #loading>
+  <p>A carregar concertos...</p>
+</ng-template>
