@@ -3,18 +3,27 @@
 <div *ngIf="error">{{ error }}</div>
 
 <div *ngIf="concerts.length > 0; else loading">
-  <div *ngFor="let concert of concerts" class="concert-card">
+  <div *ngFor="let concert of paginatedConcerts" class="concert-card">
     <h3>{{ concert.title }}</h3>
     <p><strong>Artista:</strong> {{ concert.artist }}</p>
     <p><strong>Género:</strong> {{ concert.genre }}</p>
     <p><strong>Data:</strong> {{ concert.release_date | date }}</p>
-    <iframe
-      width="360"
-      height="215"
-      [src]="'https://www.youtube.com/embed/' + concert.url"
-      frameborder="0"
-      allowfullscreen>
-    </iframe>
+
+    <img
+      [src]="'https://img.youtube.com/vi/' + concert.url + '/hqdefault.jpg'"
+      alt="thumbnail"
+      width="360" />
+
+    <br />
+
+    <button (click)="openVideo(concert.url)">▶️ Ver vídeo</button>
+  </div>
+
+  <!-- 🔁 Controlo de páginas -->
+  <div class="pagination-controls">
+    <button (click)="prevPage()" [disabled]="currentPage === 1">⬅️ Anterior</button>
+    <span>Página {{ currentPage }}</span>
+    <button (click)="nextPage()" [disabled]="currentPage * concertsPerPage >= concerts.length">Próxima ➡️</button>
   </div>
 </div>
 
