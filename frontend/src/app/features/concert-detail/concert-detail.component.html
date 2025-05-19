@@ -1,0 +1,21 @@
+<div *ngIf="concert; else loading">
+  <h2>{{ concert.title }}</h2>
+  <p><strong>Artista:</strong> {{ concert.artist }}</p>
+  <p><strong>Género:</strong> {{ concert.genre }}</p>
+  <p><strong>Data:</strong> {{ concert.release_date | date }}</p>
+
+  <iframe
+    width="560"
+    height="315"
+    [src]="safeUrl"
+    frameborder="0"
+    allowfullscreen
+    loading="lazy"
+  ></iframe>
+
+  <!-- Aqui depois podes adicionar likes, favoritos, comentários -->
+</div>
+
+<ng-template #loading>
+  <p>A carregar concerto...</p>
+</ng-template>

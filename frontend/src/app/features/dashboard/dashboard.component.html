@@ -1,0 +1,14 @@
+<div class="dashboard-layout">
+  <aside class="sidebar">
+    <h3>🎵 TinyConcerts</h3>
+    <nav>
+      <a routerLink="/profile">Perfil</a>
+      <a routerLink="/concerts">Concertos</a>
+      <button (click)="logout()">Logout</button>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

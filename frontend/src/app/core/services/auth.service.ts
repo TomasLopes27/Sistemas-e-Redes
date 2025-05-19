@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { HttpHeaders } from '@angular/common/http';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -61,7 +62,17 @@ logout() {
 
 isAuthenticated(): boolean {
   return !!this.getToken();
-}  
+}
+
+getConcertById(id: string): Observable<any> {
+  const token = this.getToken();
+  const headers = token
+    ? new HttpHeaders({ Authorization: `Bearer ${token}` })
+    : undefined;
+
+  return this.http.get(`/api/concerts/${id}`, { headers });
+}
+
 
 }
 

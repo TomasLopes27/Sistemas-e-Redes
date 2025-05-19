@@ -1,26 +1,27 @@
 .navbar {
+  background-color: #222;
+  color: white;
   display: flex;
   justify-content: space-between;
-  background: #222;
-  color: white;
-  padding: 1rem;
   align-items: center;
+  padding: 1rem;
 
   .logo {
-    font-weight: bold;
     font-size: 1.2rem;
+    font-weight: bold;
   }
 
-  button {
-    background: #f44336;
+  .nav-buttons button {
+    margin-left: 1rem;
+    background-color: #444;
     color: white;
     border: none;
     padding: 0.5rem 1rem;
+    border-radius: 5px;
     cursor: pointer;
-    border-radius: 4px;
 
     &:hover {
-      background: #d32f2f;
+      background-color: #666;
     }
   }
 }

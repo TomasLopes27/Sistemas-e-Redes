@@ -1,32 +1,43 @@
 <h2>Concertos</h2>
 
+<!-- 🔍 Pesquisa -->
+<input
+  type="text"
+  placeholder="Pesquisar por título ou artista"
+  [(ngModel)]="searchTerm"
+  class="search-input" />
+
+<!-- ⚠️ Mensagem de erro -->
 <div *ngIf="error">{{ error }}</div>
 
-<div *ngIf="concerts.length > 0; else loading">
+<!-- 🎵 Lista de concertos -->
+<div *ngIf="filteredConcerts.length > 0; else loading">
   <div *ngFor="let concert of paginatedConcerts" class="concert-card">
     <h3>{{ concert.title }}</h3>
     <p><strong>Artista:</strong> {{ concert.artist }}</p>
     <p><strong>Género:</strong> {{ concert.genre }}</p>
     <p><strong>Data:</strong> {{ concert.release_date | date }}</p>
 
-    <img
-      [src]="'https://img.youtube.com/vi/' + concert.url + '/hqdefault.jpg'"
-      alt="thumbnail"
-      width="360" />
-
-    <br />
-
-    <button (click)="openVideo(concert.url)">▶️ Ver vídeo</button>
+    <!-- 🖼️ Imagem clicável -->
+    <a [routerLink]="['/concerts', concert.id]">
+      <img
+        [src]="concert.image_url"
+        alt="Imagem do concerto"
+        width="360"
+        height="202"
+        style="cursor: pointer; border-radius: 8px;" />
+    </a>
   </div>
 
   <!-- 🔁 Controlo de páginas -->
   <div class="pagination-controls">
     <button (click)="prevPage()" [disabled]="currentPage === 1">⬅️ Anterior</button>
     <span>Página {{ currentPage }}</span>
-    <button (click)="nextPage()" [disabled]="currentPage * concertsPerPage >= concerts.length">Próxima ➡️</button>
+    <button (click)="nextPage()" [disabled]="currentPage * concertsPerPage >= filteredConcerts.length">Próxima ➡️</button>
   </div>
 </div>
 
+<!-- ⏳ Loading -->
 <ng-template #loading>
   <p>A carregar concertos...</p>
 </ng-template>

@@ -25,14 +25,19 @@ export class LoginComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
   login() {
-    this.authService.login(this.email, this.password).subscribe({
-      next: (res) => {
-        this.authService.saveToken(res.token);
-        this.router.navigate(['/profile']);
-      },
-      error: (err) => {
-        this.error = err.error?.error || 'Erro ao fazer login.';
-      }
-    });
-  }
+  this.authService.login(this.email, this.password).subscribe({
+    next: (res) => {
+      this.authService.saveToken(res.token);
+      
+      // ✅ Força a atualização do token em memória antes de navegar
+      setTimeout(() => {
+        this.router.navigate(['/concerts']);
+      }, 0); // pequeno delay para garantir que o localStorage está escrito
+    },
+    error: (err) => {
+      this.error = err.error?.error || 'Erro ao fazer login.';
+    }
+  });
+}
+
 }
