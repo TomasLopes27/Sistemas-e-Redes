@@ -1,10 +1,23 @@
 <div class="profile-container">
   <h2>Perfil</h2>
+  <p><strong>Nome:</strong> {{ name }}</p>
+  <p><strong>Email:</strong> {{ email }}</p>
 
-  <div *ngIf="error" class="error">{{ error }}</div>
+  <div class="section">
+    <h3>❤️ Concertos com Like</h3>
+    <ul>
+      <li *ngFor="let concert of likedConcerts">
+        {{ concert.title }} - {{ concert.artist }}
+      </li>
+    </ul>
+  </div>
 
-  <div *ngIf="!error">
-    <p><strong>Nome:</strong> {{ name }}</p>
-    <p><strong>Email:</strong> {{ email }}</p>
+  <div class="section">
+    <h3>⭐ Favoritos</h3>
+    <ul>
+      <li *ngFor="let concert of favoriteConcerts">
+        {{ concert.title }} - {{ concert.artist }}
+      </li>
+    </ul>
   </div>
 </div>

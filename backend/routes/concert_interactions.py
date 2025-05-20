@@ -141,6 +141,23 @@ def list_favorites(user):
     cur.close(); conn.close()
     return jsonify(favs), 200
 
+# 🔢 GET /api/users/likes - lista likes do user
+@interaction_bp.route("/users/likes", methods=["GET"])
+@token_required
+def list_likes(user):
+    user_id = get_user_id(user)
+    conn = get_connection(); cur = conn.cursor()
+    cur.execute("""
+      SELECT c.id, c.title, c.artist, c.release_date, c.url, c.image_url
+      FROM likes l
+      JOIN concerts c ON l.concert_id = c.id
+      WHERE l.user_id = %s
+    """, (user_id,))
+    likes = [dict(zip(("id", "title", "artist", "release_date", "url", "image_url"), row)) for row in cur.fetchall()]
+    cur.close(); conn.close()
+    return jsonify(likes), 200
+
+
 # 🚩 POST /api/concerts/<id>/report - enviar reporte
 @interaction_bp.route("/<int:concert_id>/report", methods=["POST"])
 @token_required

@@ -17,19 +17,32 @@ export class ProfileComponent implements OnInit {
 
   constructor(private authService: AuthService, private router: Router) {}
 
-  ngOnInit() {
-    this.authService.getProfile().subscribe({
-      next: (res) => {
-        this.name = res.name;
-        this.email = res.email;
-      },
-      error: (err) => {
-        this.error = 'Erro ao carregar perfil.';
-        if (err.status === 401) {
-          this.authService.logout();
-          this.router.navigate(['/login']);
-        }
+likedConcerts: any[] = [];
+favoriteConcerts: any[] = [];
+
+ngOnInit() {
+  this.authService.getProfile().subscribe({
+    next: (res) => {
+      this.name = res.name;
+      this.email = res.email;
+    },
+    error: (err) => {
+      this.error = 'Erro ao carregar perfil.';
+      if (err.status === 401) {
+        this.authService.logout();
+        this.router.navigate(['/login']);
       }
-    });
-  }
+    }
+  });
+
+  this.authService.getUserLikes().subscribe({
+    next: (res) => this.likedConcerts = res,
+    error: () => this.error = 'Erro ao carregar likes.'
+  });
+
+  this.authService.getUserFavorites().subscribe({
+    next: (res) => this.favoriteConcerts = res,
+    error: () => this.error = 'Erro ao carregar favoritos.'
+  });
+}
 }

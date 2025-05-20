@@ -1,70 +1,118 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { AuthService } from '../../core/services/auth.service';
-import { HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  standalone: true,
   selector: 'app-concert-detail',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './concert-detail.component.html',
-  styleUrls: ['./concert-detail.component.scss'],
-  imports: [CommonModule, RouterModule, HttpClientModule]
+  styleUrls: ['./concert-detail.component.scss']
 })
 export class ConcertDetailComponent implements OnInit {
-  concert: any = null;
-  safeUrl: SafeResourceUrl | null = null;
+  concert: any;
+  safeUrl!: SafeResourceUrl;
   error = '';
+  comments: any[] = [];
+  newComment = '';
+  liked = false;
+  favorited = false;
+  likeCount = 0;
 
   constructor(
     private route: ActivatedRoute,
-    private authService: AuthService,
+    private router: Router,
     private sanitizer: DomSanitizer,
-    private router: Router
+    private authService: AuthService
   ) {}
 
-extractVideoId(url: string): string {
-  try {
-    const parsed = new URL(url);
-    return parsed.searchParams.get('v') || url;
-  } catch {
-    return url;
-  }
-}
-
-ngOnInit() {
+  ngOnInit() {
   const id = this.route.snapshot.paramMap.get('id');
-
-  if (!id) {
-    this.error = 'ID inválido';
-    return;
-  }
-
-  //Garante que só faz a chamada se estiver autenticado
-  if (!this.authService.isAuthenticated()) {
-    this.authService.logout();
-    this.router.navigate(['/login']);
-    return;
-  }
+  if (!id) return;
 
   this.authService.getConcertById(id).subscribe({
     next: (data) => {
       this.concert = data;
-
       const videoId = this.extractVideoId(this.concert.url);
-      console.log("URL recebido:", this.concert.url);
-
       this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
         `https://www.youtube.com/embed/${videoId}`
       );
+
+      // Comentários
+      this.authService.getComments(id).subscribe((res) => this.comments = res);
+
+      // Total de likes
+      this.authService.getLikes(id).subscribe({
+        next: (res) => this.likeCount = res.likes,
+        error: () => this.likeCount = 0
+      });
+
+      // Verifica se este utilizador já deu like
+      this.authService.getUserLikes().subscribe({
+        next: (likes) => {
+          this.liked = likes.some(c => c.id === this.concert.id);
+        },
+        error: () => {
+          this.liked = false;
+        }
+      });
+
+      // Verifica se é favorito
+      this.authService.getUserFavorites().subscribe({
+        next: (favs) => {
+          this.favorited = favs.some(c => c.id === this.concert.id);
+        },
+        error: () => {
+          this.favorited = false;
+        }
+      });
+
     },
-    error: (err) => {
+    error: () => {
       this.error = 'Erro ao carregar concerto.';
-      console.error(err);
     }
   });
 }
 
+
+
+  extractVideoId(url: string): string {
+    if (url.startsWith('http')) {
+      const match = url.match(/v=([^&]+)/);
+      return match ? match[1] : '';
+    }
+    return url;
+  }
+
+  enviarComentario() {
+    const id = this.concert.id;
+    this.authService.addComment(id, this.newComment).subscribe({
+      next: () => {
+        this.comments.unshift({
+          user: 'Tu', content: this.newComment, timestamp: new Date().toISOString()
+        });
+        this.newComment = '';
+      },
+      error: () => this.error = 'Erro ao enviar comentário.'
+    });
+  }
+
+toggleLike() {
+  this.authService.toggleLike(this.concert.id).subscribe({
+    next: () => {
+      this.liked = !this.liked;
+      this.likeCount += this.liked ? 1 : -1;
+    }
+  });
+}
+
+
+  toggleFavorite() {
+    this.authService.toggleFavorite(this.concert.id).subscribe({
+      next: () => this.favorited = !this.favorited
+    });
+  }
 }

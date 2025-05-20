@@ -20,6 +20,12 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/register`, { name, email, password });
   }
 
+ private getHeaders(): HttpHeaders {
+  const token = this.getToken();
+  return new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+}
 
 
   saveToken(token: string) {
@@ -69,6 +75,41 @@ getConcertById(id: string): Observable<any> {
 
   return this.http.get(`/api/concerts/${id}`, { headers });
 }
+
+getComments(id: string | number) {
+  return this.http.get<any[]>(`/api/concerts/${id}/comments`);
+}
+
+addComment(id: string | number, content: string) {
+  return this.http.post(`/api/concerts/${id}/comment`, { content }, {
+    headers: this.getHeaders()
+  });
+}
+
+toggleLike(id: number) {
+  return this.http.post(`/api/concerts/${id}/like`, {}, {
+    headers: this.getHeaders()
+  });
+}
+
+toggleFavorite(id: number) {
+  return this.http.post(`/api/concerts/${id}/favorite`, {}, {
+    headers: this.getHeaders()
+  });
+}
+
+getUserLikes(): Observable<any[]> {
+  return this.http.get<any[]>('/api/concerts/users/likes', { headers: this.getHeaders() });
+}
+
+getUserFavorites(): Observable<any[]> {
+  return this.http.get<any[]>('/api/concerts/users/favorites', { headers: this.getHeaders() });
+}
+
+getLikes(id: number | string): Observable<{ likes: number }> {
+  return this.http.get<{ likes: number }>(`${this.apiUrl}/concerts/${id}/likes`);
+}
+
 
 
 }
