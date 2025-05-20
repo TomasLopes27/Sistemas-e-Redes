@@ -5,6 +5,8 @@
       <a routerLink="/profile">Perfil</a>
       <a routerLink="/concerts">Concertos</a>
       <button (click)="logout()">Logout</button>
+      <a *ngIf="isAdmin" routerLink="/admin">Painel de Administração</a>
+
     </nav>
   </aside>
 

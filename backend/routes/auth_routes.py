@@ -43,7 +43,7 @@ def login():
     try:
         conn = get_connection()
         cur = conn.cursor()
-        cur.execute("SELECT id, password FROM users WHERE email = %s", (email,))
+        cur.execute("SELECT id, password, usertype FROM users WHERE email = %s", (email,))
         user = cur.fetchone()
         cur.close()
         conn.close()
@@ -51,10 +51,12 @@ def login():
         if user and bcrypt.checkpw(password.encode(), user[1].encode()):
             token = jwt.encode({
                 "user_id": user[0],
+                "usertype": user[2],
                 "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1)
-            }, current_app.config["SECRET_KEY"], algorithm="HS256")
+        }, current_app.config["SECRET_KEY"], algorithm="HS256")
 
             return jsonify({"token": token}), 200
+
         else:
             return jsonify({"error": "Credenciais inválidas"}), 401
 

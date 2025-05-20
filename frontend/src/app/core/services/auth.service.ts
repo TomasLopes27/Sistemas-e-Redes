@@ -116,6 +116,19 @@ updateProfile(name: string, email: string) {
   });
 }
 
+createConcert(concert: any) {
+  return this.http.post('/api/concerts/', concert, { headers: this.getHeaders() });
+}
+
+updateConcert(id: number, concert: any) {
+  return this.http.put(`/api/concerts/${id}`, concert, { headers: this.getHeaders() });
+}
+
+deleteConcert(id: number) {
+  return this.http.delete(`/api/concerts/${id}`, { headers: this.getHeaders() });
+}
+
+
 
 
 
