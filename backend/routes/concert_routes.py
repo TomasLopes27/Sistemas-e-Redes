@@ -11,7 +11,7 @@ def list_concerts():
     try:
         conn = get_connection()
         cur = conn.cursor()
-        cur.execute("SELECT id, title, artist, genre, release_date, url FROM concerts")
+        cur.execute("SELECT id, title, url, artist, genre, release_date, image_url FROM concerts")
         concerts = cur.fetchall()
         cur.close()
         conn.close()
@@ -20,10 +20,11 @@ def list_concerts():
             {
                 "id": c[0],
                 "title": c[1],
-                "artist": c[2],
-                "genre": c[3],
-                "release_date": c[4],
-                "url": c[5]
+                "url": c[2],
+                "artist": c[3],
+                "genre": c[4],
+                "release_date": c[5],
+                "image_url": c[6]
             } for c in concerts
         ]
         return jsonify(concerts_list), 200
@@ -44,9 +45,9 @@ def create_concert(user):
         conn = get_connection()
         cur = conn.cursor()
         cur.execute("""
-            INSERT INTO concerts (title, url, artist, genre, release_date)
-            VALUES (%s, %s, %s, %s, %s)
-        """, (data["title"], data["url"], data["artist"], data["genre"], data["release_date"]))
+            INSERT INTO concerts (title, url, artist, genre, release_date, image_url)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """, (data["title"], data["url"], data["artist"], data["genre"], data["release_date"], data["image_url"]))
         conn.commit()
         cur.close()
         conn.close()
@@ -61,7 +62,7 @@ def get_concert(concert_id):
     try:
         conn = get_connection()
         cur = conn.cursor()
-        cur.execute("SELECT id, title, artist, genre, release_date, url FROM concerts WHERE id = %s", (concert_id,))
+        cur.execute("SELECT id, title, artist, genre, release_date, image_url, url FROM concerts WHERE id = %s", (concert_id,))
         c = cur.fetchone()
         cur.close()
         conn.close()
@@ -75,7 +76,8 @@ def get_concert(concert_id):
             "artist": c[2],
             "genre": c[3],
             "release_date": c[4],
-            "url": c[5]
+            "url": c[6],
+            
         }), 200
 
     except Exception as e:
@@ -95,9 +97,9 @@ def update_concert(user, concert_id):
         cur = conn.cursor()
         cur.execute("""
             UPDATE concerts
-            SET title = %s, url = %s, artist = %s, genre = %s, release_date = %s
+            SET title = %s, url = %s, artist = %s, genre = %s, release_date = %s, image_url = %s
             WHERE id = %s
-        """, (data["title"], data["url"], data["artist"], data["genre"], data["release_date"], concert_id))
+        """, (data["title"], data["url"], data["artist"], data["genre"], data["release_date"], data["image_url"],concert_id))
         conn.commit()
         cur.close()
         conn.close()

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { HttpHeaders } from '@angular/common/http';
 
 
@@ -33,16 +33,13 @@ export class AuthService {
     return null;
   }
 
-  getConcerts(): Observable<any> {
-    const token = this.getToken();
-    let headers = new HttpHeaders();
+getConcerts(): Observable<any> {
+  const token = this.getToken();
+  if (!token) return throwError(() => new Error("Token inválido"));
 
-    if (token) {
-      headers = headers.set('Authorization', `Bearer ${token}`);
-    }
-
-    return this.http.get('/api/concerts', { headers });
-  }
+  const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+  return this.http.get(`${this.apiUrl}/concerts/`, { headers });
+}
 
 
 getProfile(): Observable<any> {

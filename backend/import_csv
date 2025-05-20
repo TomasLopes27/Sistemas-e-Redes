@@ -4,10 +4,9 @@ from db import get_connection
 # Lê o ficheiro CSV
 df = pd.read_csv(r"C:\Users\tomas\Desktop\Redes\Sistemas-e-Redes\backend\tinyConcertsALL.csv")
 
-# Mostra as primeiras linhas para confirmar
-print(df.head())
-
-
+# Extrai o nome do artista e o género
+df["artist"] = df["title"].str.split(":").str[0].str.strip()
+df["genre"] = df["category"].str.strip()
 
 def insert_concerts():
     try:
@@ -19,12 +18,14 @@ def insert_concerts():
             artist = row.get("artist", None)
             genre = row.get("genre", None)
             release_date = row.get("published_at", None)
-            url = f"https://www.youtube.com/watch?v={row['video_id']}"  
+            url = f"https://www.youtube.com/watch?v={row['video_id']}"
+            image_url = row.get("image_480_360", None)
 
             cur.execute("""
-                INSERT INTO concerts (title, url, artist, genre, release_date)
-                VALUES (%s, %s, %s, %s, %s)
-            """, (title, url, artist, genre, release_date))
+                INSERT INTO concerts (title, url, artist, genre, release_date, image_url)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """, (title, url, artist, genre, release_date, image_url))
+
 
         conn.commit()
         cur.close()
@@ -33,7 +34,6 @@ def insert_concerts():
 
     except Exception as e:
         print("Erro ao inserir dados:", e)
-
 
 if __name__ == "__main__":
     insert_concerts()

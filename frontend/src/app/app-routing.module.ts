@@ -6,6 +6,8 @@ import { ConcertListComponent } from './features/concert-list/concert-list.compo
 import { RegisterComponent } from './features/register/register.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { ConcertDetailComponent } from './features/concert-detail/concert-detail.component';
+import { AuthGuard } from './core/guards/auth.guard';
+
 
 
 
@@ -14,19 +16,20 @@ import { ConcertDetailComponent } from './features/concert-detail/concert-detail
 
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent },
   {
     path: '',
-    component: DashboardComponent,
+    component: DashboardComponent, // ← dashboard com a sidebar
     children: [
-      { path: 'concerts', component: ConcertListComponent },
-      { path: 'concerts/:id', component: ConcertDetailComponent },
-      { path: 'profile', component: ProfileComponent }
+      { path: 'profile', component: ProfileComponent,canActivate: [AuthGuard]},
+      { path: 'concerts', component: ConcertListComponent,canActivate: [AuthGuard] },
+      { path: 'concerts/:id', component: ConcertDetailComponent,canActivate: [AuthGuard] },
     ]
   },
-  { path: 'register', component: RegisterComponent }
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: '**', redirectTo: 'login' }
 ];
+
 
 
 @NgModule({

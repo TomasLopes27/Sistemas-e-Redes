@@ -5,10 +5,6 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-
-
-
-
 @Component({
   selector: 'app-concert-list',
   standalone: true,

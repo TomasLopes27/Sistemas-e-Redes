@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { AuthService } from '../../core/services/auth.service';
 import { HttpClientModule } from '@angular/common/http';
@@ -11,17 +11,18 @@ import { HttpClientModule } from '@angular/common/http';
   selector: 'app-concert-detail',
   templateUrl: './concert-detail.component.html',
   styleUrls: ['./concert-detail.component.scss'],
-  imports: [CommonModule, RouterModule, HttpClientModule] // ✅ aqui está o segredo
+  imports: [CommonModule, RouterModule, HttpClientModule]
 })
 export class ConcertDetailComponent implements OnInit {
-  concert: any = null; // ✅ isto estava a faltar
+  concert: any = null;
   safeUrl: SafeResourceUrl | null = null;
   error = '';
 
   constructor(
     private route: ActivatedRoute,
     private authService: AuthService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private router: Router
   ) {}
 
 extractVideoId(url: string): string {
@@ -29,20 +30,31 @@ extractVideoId(url: string): string {
     const parsed = new URL(url);
     return parsed.searchParams.get('v') || url;
   } catch {
-    return url; // fallback: assume que já é o ID
+    return url;
   }
 }
 
 ngOnInit() {
   const id = this.route.snapshot.paramMap.get('id');
-  if (!id) return;
+
+  if (!id) {
+    this.error = 'ID inválido';
+    return;
+  }
+
+  //Garante que só faz a chamada se estiver autenticado
+  if (!this.authService.isAuthenticated()) {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+    return;
+  }
 
   this.authService.getConcertById(id).subscribe({
     next: (data) => {
       this.concert = data;
 
       const videoId = this.extractVideoId(this.concert.url);
-      console.log("URL recebido:", this.concert.url);  // 👈 vê se é tipo 'MQBuO2yWsFQ'
+      console.log("URL recebido:", this.concert.url);
 
       this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
         `https://www.youtube.com/embed/${videoId}`

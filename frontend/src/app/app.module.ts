@@ -10,7 +10,6 @@ import { LoginComponent } from './features/login/login.component';
   declarations: [
     AppComponent,
     LoginComponent
-    // outros componentes
   ],
   imports: [
     BrowserModule,

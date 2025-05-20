@@ -29,7 +29,7 @@ export class LoginComponent {
     next: (res) => {
       this.authService.saveToken(res.token);
       
-      // ✅ Força a atualização do token em memória antes de navegar
+      // Força a atualização do token em memória antes de ir para o concerto
       setTimeout(() => {
         this.router.navigate(['/concerts']);
       }, 0); // pequeno delay para garantir que o localStorage está escrito
