@@ -110,6 +110,13 @@ getLikes(id: number | string): Observable<{ likes: number }> {
   return this.http.get<{ likes: number }>(`${this.apiUrl}/concerts/${id}/likes`);
 }
 
+updateProfile(name: string, email: string) {
+  return this.http.put('/api/profile', { name, email }, {
+    headers: this.getHeaders()
+  });
+}
+
+
 
 
 }

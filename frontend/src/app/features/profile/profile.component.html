@@ -1,7 +1,28 @@
 <div class="profile-container">
   <h2>Perfil</h2>
-  <p><strong>Nome:</strong> {{ name }}</p>
-  <p><strong>Email:</strong> {{ email }}</p>
+
+  <div *ngIf="!editMode">
+    <p><strong>Nome:</strong> {{ name }}</p>
+    <p><strong>Email:</strong> {{ email }}</p>
+    <button (click)="editMode = true">✏️ Editar Perfil</button>
+  </div>
+
+  <div *ngIf="editMode">
+    <label>
+      Nome:
+      <input type="text" [(ngModel)]="name" />
+    </label>
+    <br />
+    <label>
+      Email:
+      <input type="email" [(ngModel)]="email" />
+    </label>
+    <br />
+    <button (click)="saveChanges()">💾 Guardar</button>
+    <button (click)="editMode = false">❌ Cancelar</button>
+  </div>
+
+  <hr />
 
   <div class="section">
     <h3>❤️ Concertos com Like</h3>
@@ -20,4 +41,6 @@
       </li>
     </ul>
   </div>
+
+  <p *ngIf="error" class="error">{{ error }}</p>
 </div>

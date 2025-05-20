@@ -3,6 +3,7 @@ from routes.auth_routes import auth_bp
 from routes.concert_routes import concert_bp
 from routes.concert_interactions import interaction_bp
 from routes.admin_users import admin_bp
+from routes.user_routes import user_bp
 
 
 
@@ -11,6 +12,8 @@ app = Flask(__name__)
 app.register_blueprint(auth_bp)
 app.register_blueprint(concert_bp)
 app.register_blueprint(interaction_bp)
+app.register_blueprint(user_bp)
+app.register_blueprint(admin_bp)
 app.config["SECRET_KEY"] = "asdfe"
 
 
