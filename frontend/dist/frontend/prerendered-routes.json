@@ -1,0 +1,10 @@
+{
+  "routes": [
+    "/",
+    "/admin",
+    "/concerts",
+    "/login",
+    "/profile",
+    "/register"
+  ]
+}
