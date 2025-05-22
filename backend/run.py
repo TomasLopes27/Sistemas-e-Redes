@@ -4,6 +4,7 @@ from routes.concert_routes import concert_bp
 from routes.concert_interactions import interaction_bp
 from routes.admin_users import admin_bp
 from routes.user_routes import user_bp
+import os
 
 
 
@@ -18,4 +19,5 @@ app.config["SECRET_KEY"] = "asdfe"
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))  # <- usa a porta que o Render fornece
+    app.run(host='0.0.0.0', port=port)        # <- obrigatoriamente 0.0.0.0
