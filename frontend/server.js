@@ -2,10 +2,10 @@ const express = require('express');
 const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 10000;
 
-// Muda isto se o teu projeto Angular tiver outro nome que não seja 'frontend'
-const distFolder = path.join(__dirname, 'dist/frontend');
+// Serve os ficheiros estáticos da build Angular SSR
+const distFolder = path.join(__dirname, 'dist/frontend/browser');
 
 app.use(express.static(distFolder));
 
