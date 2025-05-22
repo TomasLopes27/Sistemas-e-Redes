@@ -10,13 +10,6 @@ import { AuthGuard } from './core/guards/auth.guard';
 import { AdminDashboardComponent } from './features/admin-dashboard/admin-dashboard.component';
 
 
-
-
-
-
-
-
-
 export const routes: Routes = [
   {
     path: '',
