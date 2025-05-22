@@ -1,6 +1,5 @@
-import os
-import psycopg2
 from urllib.parse import urlparse
+import os, psycopg2
 
 def get_connection():
     db_url = os.environ.get("DATABASE_URL")

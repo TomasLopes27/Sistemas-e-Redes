@@ -6,3 +6,4 @@ PyJWT==2.10.1
 pandas==2.2.3
 python-dotenv==0.21.0
 flask-cors==6.0.0
+dj-database-url==2.3.0
