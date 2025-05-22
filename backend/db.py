@@ -1,13 +1,18 @@
-import psycopg2
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
+import psycopg2
+from urllib.parse import urlparse
 
 def get_connection():
+    db_url = os.environ.get("DATABASE_URL")
+    if not db_url:
+        raise Exception("DATABASE_URL não definida")
+
+    result = urlparse(db_url)
+
     return psycopg2.connect(
-        host=os.getenv("DB_HOST"),
-        database=os.getenv("DB_NAME"),
-        user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PASSWORD")
+        dbname=result.path[1:],
+        user=result.username,
+        password=result.password,
+        host=result.hostname,
+        port=result.port
     )
