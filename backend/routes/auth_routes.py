@@ -23,26 +23,39 @@ def register():
     email = data["email"]
     password = data["password"]
 
-    hashed_pw = bcrypt.hashpw(
-        password.encode(), bcrypt.gensalt()
-    ).decode()  # gera o hash da pasword
+    hashed_pw = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
     try:
         conn = get_connection()
         cur = conn.cursor()
+
+        # 👉 Verifica se já existe utilizador com este email
+        cur.execute("SELECT id FROM users WHERE email = %s", (email,))
+        existing_user = cur.fetchone()
+
+        if existing_user:
+            cur.close()
+            conn.close()
+            return jsonify({"error": "Este email já está registado."}), 400
+
+        # Se não existir, regista o novo utilizador
         cur.execute(
             """
             INSERT INTO users (name, email, password, usertype)
             VALUES (%s, %s, %s, %s)
-        """,
+            """,
             (name, email, hashed_pw, 1),
         )
+
         conn.commit()
         cur.close()
         conn.close()
-        return jsonify({"message": "Utilizador registado!"}), 201
+
+        return jsonify({"message": "Utilizador registado com sucesso!"}), 201
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 
 @auth_bp.route("/login", methods=["POST"])
