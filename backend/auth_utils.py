@@ -4,6 +4,7 @@ from db import get_connection
 import jwt
 from flask import current_app
 
+
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -15,18 +16,24 @@ def token_required(f):
             if len(parts) == 2 and parts[0] == "Bearer":
                 token = parts[1]
             else:
-                print("DEBUG — Cabeçalho Authorization não está no formato 'Bearer <token>'")
+                print(
+                    "DEBUG — Cabeçalho Authorization não está no formato 'Bearer <token>'"
+                )
 
         if not token:
             return jsonify({"error": "Token não fornecido"}), 401
 
         try:
-            data = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])
+            data = jwt.decode(
+                token, current_app.config["SECRET_KEY"], algorithms=["HS256"]
+            )
             user_id = data["user_id"]
 
             conn = get_connection()
             cur = conn.cursor()
-            cur.execute("SELECT id, name, email, usertype FROM users WHERE id = %s", (user_id,))
+            cur.execute(
+                "SELECT id, name, email, usertype FROM users WHERE id = %s", (user_id,)
+            )
             user = cur.fetchone()
             cur.close()
             conn.close()
@@ -45,4 +52,3 @@ def token_required(f):
         return f(user, *args, **kwargs)
 
     return decorated
-

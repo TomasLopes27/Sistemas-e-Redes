@@ -7,7 +7,7 @@ venv/
 # Node.js / Frontend
 node_modules/
 build/
-dist/frontend
+dist/
 
 # Sistema
 .DS_Store

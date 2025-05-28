@@ -10,10 +10,11 @@ import os
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "asdfe"
 
-CORS(app, supports_credentials=True, origins=[
-    "http://localhost:10000",
-    "https://sistemas-e-redes-front.onrender.com"
-])
+CORS(
+    app,
+    supports_credentials=True,
+    origins=["http://localhost:10000", "https://sistemas-e-redes-front.onrender.com"],
+)
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(concert_bp)
@@ -22,5 +23,5 @@ app.register_blueprint(user_bp)
 app.register_blueprint(admin_bp)
 
 if __name__ == "__main__":
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)

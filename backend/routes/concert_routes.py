@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify,make_response
+from flask import Blueprint, request, jsonify, make_response
 from db import get_connection
 from auth_utils import token_required
 
@@ -11,7 +11,9 @@ def list_concerts():
     try:
         conn = get_connection()
         cur = conn.cursor()
-        cur.execute("SELECT id, title, url, artist, genre, release_date, image_url FROM concerts")
+        cur.execute(
+            "SELECT id, title, url, artist, genre, release_date, image_url FROM concerts"
+        )
         concerts = cur.fetchall()
         cur.close()
         conn.close()
@@ -24,34 +26,12 @@ def list_concerts():
                 "artist": c[3],
                 "genre": c[4],
                 "release_date": c[5],
-                "image_url": c[6]
-            } for c in concerts
+                "image_url": c[6],
+            }
+            for c in concerts
         ]
         return jsonify(concerts_list), 200
 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
-# ➕ POST /api/concerts - criar (admin only)
-@concert_bp.route("/", methods=["POST"])
-@token_required
-def create_concert(user):
-    if user[3] != 0:
-        return jsonify({"error": "Acesso negado: apenas admin"}), 403
-
-    data = request.get_json()
-    try:
-        conn = get_connection()
-        cur = conn.cursor()
-        cur.execute("""
-            INSERT INTO concerts (title, url, artist, genre, release_date, image_url)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (data["title"], data["url"], data["artist"], data["genre"], data["release_date"], data["image_url"]))
-        conn.commit()
-        cur.close()
-        conn.close()
-        return jsonify({"message": "Concerto criado com sucesso"}), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -61,7 +41,10 @@ def get_concert(concert_id):
     try:
         conn = get_connection()
         cur = conn.cursor()
-        cur.execute("SELECT id, title, artist, genre, release_date, image_url, url FROM concerts WHERE id = %s", (concert_id,))
+        cur.execute(
+            "SELECT id, title, artist, genre, release_date, image_url, url FROM concerts WHERE id = %s",
+            (concert_id,),
+        )
         c = cur.fetchone()
         cur.close()
         conn.close()
@@ -76,7 +59,7 @@ def get_concert(concert_id):
             "genre": c[3],
             "release_date": c[4],
             "image_url": c[5],
-            "url": c[6]
+            "url": c[6],
         }
 
         return make_response(jsonify(response), 200)
@@ -84,6 +67,38 @@ def get_concert(concert_id):
     except Exception as e:
         return make_response(jsonify({"error": str(e)}), 500)
 
+
+# ➕ POST /api/concerts - criar (admin only)
+@concert_bp.route("/", methods=["POST"])
+@token_required
+def create_concert(user):
+    if user[3] != 0:
+        return jsonify({"error": "Acesso negado: apenas admin"}), 403
+
+    data = request.get_json()
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute(
+            """
+            INSERT INTO concerts (title, url, artist, genre, release_date, image_url)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """,
+            (
+                data["title"],
+                data["url"],
+                data["artist"],
+                data["genre"],
+                data["release_date"],
+                data["image_url"],
+            ),
+        )
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({"message": "Concerto criado com sucesso"}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 # ✏️ PUT /api/concerts/<id> - editar (admin only)
@@ -97,11 +112,22 @@ def update_concert(user, concert_id):
     try:
         conn = get_connection()
         cur = conn.cursor()
-        cur.execute("""
+        cur.execute(
+            """
             UPDATE concerts
             SET title = %s, url = %s, artist = %s, genre = %s, release_date = %s, image_url = %s
             WHERE id = %s
-        """, (data["title"], data["url"], data["artist"], data["genre"], data["release_date"], data["image_url"],concert_id))
+        """,
+            (
+                data["title"],
+                data["url"],
+                data["artist"],
+                data["genre"],
+                data["release_date"],
+                data["image_url"],
+                concert_id,
+            ),
+        )
         conn.commit()
         cur.close()
         conn.close()
