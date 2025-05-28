@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import { tap } from 'rxjs/operators';
+
 
 
 @Injectable({
@@ -21,13 +23,18 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/register`, { name, email, password });
   }
 
- private getHeaders(): HttpHeaders {
-  const token = this.getToken();
-  return new HttpHeaders({
-    Authorization: `Bearer ${token}`
-  });
-}
+  getConcertById(id: string) {
+    const headers = this.getHeaders();
+    return this.http.get<any>(`${this.apiUrl}/concerts/${id}`, { headers });
+  }
 
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': token ? `Bearer ${token}` : ''
+    });
+  }
 
   saveToken(token: string) {
     localStorage.setItem('token', token);
@@ -68,66 +75,72 @@ isAuthenticated(): boolean {
   return !!this.getToken();
 }
 
-getConcertById(id: string): Observable<any> {
-  const token = this.getToken();
-  const headers = token
-    ? new HttpHeaders({ Authorization: `Bearer ${token}` })
-    : undefined;
-
-  return this.http.get(`/api/concerts/${id}`, { headers });
-}
 
 getComments(id: string | number) {
-  return this.http.get<any[]>(`/api/concerts/${id}/comments`);
+  return this.http.get<any[]>(`${this.apiUrl}/concerts/${id}/comments`, {
+    headers: this.getHeaders()
+  });
 }
 
 addComment(id: string | number, content: string) {
-  return this.http.post(`/api/concerts/${id}/comment`, { content }, {
+  return this.http.post(`${this.apiUrl}/concerts/${id}/comment`, { content }, {
     headers: this.getHeaders()
   });
 }
 
 toggleLike(id: number) {
-  return this.http.post(`/api/concerts/${id}/like`, {}, {
+  return this.http.post(`${this.apiUrl}/concerts/${id}/like`, {}, {
     headers: this.getHeaders()
   });
 }
 
-toggleFavorite(id: number) {
-  return this.http.post(`/api/concerts/${id}/favorite`, {}, {
-    headers: this.getHeaders()
-  });
-}
-
-getUserLikes(): Observable<any[]> {
-  return this.http.get<any[]>('/api/concerts/users/likes', { headers: this.getHeaders() });
-}
-
-getUserFavorites(): Observable<any[]> {
-  return this.http.get<any[]>('/api/concerts/users/favorites', { headers: this.getHeaders() });
-}
 
 getLikes(id: number | string): Observable<{ likes: number }> {
   return this.http.get<{ likes: number }>(`${this.apiUrl}/concerts/${id}/likes`);
 }
 
+toggleFavorite(id: number) {
+  return this.http.post(`${this.apiUrl}/concerts/${id}/favorite`, {}, {
+    headers: this.getHeaders()
+  });
+}
+
+getUserLikes(): Observable<any[]> {
+  return this.http.get<any[]>(`${this.apiUrl}/concerts/users/likes`, {
+    headers: this.getHeaders()
+  });
+}
+
+getUserFavorites(): Observable<any[]> {
+  return this.http.get<any[]>(`${this.apiUrl}/concerts/users/favorites`, {
+    headers: this.getHeaders()
+  });
+}
+
 updateProfile(name: string, email: string) {
-  return this.http.put('/api/profile', { name, email }, {
+  return this.http.put(`${this.apiUrl}/profile`, { name, email }, {
     headers: this.getHeaders()
   });
 }
 
 createConcert(concert: any) {
-  return this.http.post('/api/concerts/', concert, { headers: this.getHeaders() });
+  return this.http.post(`${this.apiUrl}/concerts/`, concert, {
+    headers: this.getHeaders()
+  });
 }
 
 updateConcert(id: number, concert: any) {
-  return this.http.put(`/api/concerts/${id}`, concert, { headers: this.getHeaders() });
+  return this.http.put(`${this.apiUrl}/concerts/${id}`, concert, {
+    headers: this.getHeaders()
+  });
 }
 
 deleteConcert(id: number) {
-  return this.http.delete(`/api/concerts/${id}`, { headers: this.getHeaders() });
+  return this.http.delete(`${this.apiUrl}/concerts/${id}`, {
+    headers: this.getHeaders()
+  });
 }
+
 
 
 

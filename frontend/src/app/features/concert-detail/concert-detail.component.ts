@@ -31,10 +31,17 @@ export class ConcertDetailComponent implements OnInit {
 
   ngOnInit() {
   const id = this.route.snapshot.paramMap.get('id');
-  if (!id) return;
+  if (!id) {
+    console.error('❌ ID de concerto ausente da rota');
+    return;
+  }
+
+  console.log('🔍 ID recebido:', id);
 
   this.authService.getConcertById(id).subscribe({
     next: (data) => {
+      console.log('🎶 Concerto recebido do backend:', data); 
+
       this.concert = data;
       const videoId = this.extractVideoId(this.concert.url);
       this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
@@ -50,7 +57,7 @@ export class ConcertDetailComponent implements OnInit {
         error: () => this.likeCount = 0
       });
 
-      // Verifica se este utilizador já deu like
+      // Likes e favoritos
       this.authService.getUserLikes().subscribe({
         next: (likes) => {
           this.liked = likes.some(c => c.id === this.concert.id);
@@ -60,7 +67,6 @@ export class ConcertDetailComponent implements OnInit {
         }
       });
 
-      // Verifica se é favorito
       this.authService.getUserFavorites().subscribe({
         next: (favs) => {
           this.favorited = favs.some(c => c.id === this.concert.id);
@@ -71,7 +77,8 @@ export class ConcertDetailComponent implements OnInit {
       });
 
     },
-    error: () => {
+    error: (err) => {
+      console.error('❌ Erro ao carregar concerto:', err);
       this.error = 'Erro ao carregar concerto.';
     }
   });

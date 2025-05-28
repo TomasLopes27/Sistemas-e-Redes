@@ -7,6 +7,7 @@ venv/
 # Node.js / Frontend
 node_modules/
 build/
+dist
 
 # Sistema
 .DS_Store
@@ -17,4 +18,6 @@ build/
 
 #.env
 .env
+
+
 

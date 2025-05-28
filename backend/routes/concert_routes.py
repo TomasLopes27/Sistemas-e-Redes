@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify,make_response
 from db import get_connection
 from auth_utils import token_required
 
@@ -56,7 +56,6 @@ def create_concert(user):
         return jsonify({"error": str(e)}), 500
 
 
-# 🆔 GET /api/concerts/<id> - detalhe
 @concert_bp.route("/<int:concert_id>", methods=["GET"])
 def get_concert(concert_id):
     try:
@@ -68,20 +67,23 @@ def get_concert(concert_id):
         conn.close()
 
         if not c:
-            return jsonify({"error": "Concerto não encontrado"}), 404
+            return make_response(jsonify({"error": "Concerto não encontrado"}), 404)
 
-        return jsonify({
+        response = {
             "id": c[0],
             "title": c[1],
             "artist": c[2],
             "genre": c[3],
             "release_date": c[4],
-            "url": c[6],
-            
-        }), 200
+            "image_url": c[5],
+            "url": c[6]
+        }
+
+        return make_response(jsonify(response), 200)
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return make_response(jsonify({"error": str(e)}), 500)
+
 
 
 # ✏️ PUT /api/concerts/<id> - editar (admin only)

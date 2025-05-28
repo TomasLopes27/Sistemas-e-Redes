@@ -1,33 +1,35 @@
-<div class="concert-container">
-  <!-- Vídeo à esquerda -->
-  <div class="video-section">
-    <h2>{{ concert.title }}</h2>
-    <iframe [src]="safeUrl" width="100%" height="315" frameborder="0" allowfullscreen></iframe>
-    
-    <div class="actions">
-  <button (click)="toggleLike()">
-    ❤️ {{ liked ? 'Remover Like' : 'Dar Like' }} ({{ likeCount }})
-  </button>
-  <button (click)="toggleFavorite()">
-    ⭐ {{ favorited ? 'Remover Favorito' : 'Favoritar' }}
-  </button>
-</div>
+<div *ngIf="concert; else carregando">
+  <h2>{{ concert.title }}</h2>
+  <iframe [src]="safeUrl" width="100%" height="315" frameborder="0" allowfullscreen></iframe>
 
+  <div class="actions">
+    <button (click)="toggleLike()">
+      ❤️ {{ liked ? 'Remover Like' : 'Dar Like' }} ({{ likeCount }})
+    </button>
+    <button (click)="toggleFavorite()">
+      ⭐ {{ favorited ? 'Remover Favorito' : 'Favoritar' }}
+    </button>
+  </div>
 
-    <!-- Comentários -->
-    <div class="comments-section">
-      <h3>Comentários</h3>
-      <form (ngSubmit)="enviarComentario()" class="comment-form">
-        <textarea [(ngModel)]="newComment" name="comentario" placeholder="Escreve um comentário..." required></textarea>
-        <button type="submit">Comentar</button>
-      </form>
+  <!-- Comentários -->
+  <div class="comments-section">
+    <h3>Comentários</h3>
+    <form (ngSubmit)="enviarComentario()" class="comment-form">
+      <textarea [(ngModel)]="newComment" name="comentario" placeholder="Escreve um comentário..." required></textarea>
+      <button type="submit">Comentar</button>
+    </form>
 
-      <ul class="comments-list">
-        <li *ngFor="let c of comments">
-          <strong>{{ c.user }}</strong> <span class="timestamp">{{ c.timestamp | date:'short' }}</span><br />
-          <p>{{ c.content }}</p>
-        </li>
-      </ul>
-    </div>
+    <ul class="comments-list">
+      <li *ngFor="let c of comments">
+        <strong>{{ c.user }}</strong> <span class="timestamp">{{ c.timestamp | date:'short' }}</span><br />
+        <p>{{ c.content }}</p>
+      </li>
+    </ul>
   </div>
 </div>
+
+<ng-template #carregando>
+  <p>A carregar concerto...</p>
+</ng-template>
+
+<p *ngIf="error">{{ error }}</p>
