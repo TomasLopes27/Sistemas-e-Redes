@@ -9,10 +9,6 @@ const distFolder = path.join(__dirname, 'dist/frontend/browser');
 
 app.use(express.static(distFolder));
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(distFolder, 'index.html'));
-});
-
 app.listen(PORT, () => {
   console.log(`Servidor Angular em produção na porta ${PORT}`);
 });
