@@ -1,0 +1,26 @@
+h2[mat-dialog-title] {
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+mat-dialog-content {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+
+  button {
+    font-weight: 600;
+    border-radius: 6px;
+    min-width: 72px;
+    padding: 0.4rem 1.2rem;
+    margin-left: 0.5rem;
+  }
+}

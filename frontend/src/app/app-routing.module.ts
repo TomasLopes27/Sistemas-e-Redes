@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './core/guards/auth.guard';
+
 import { LoginComponent } from './features/login/login.component';
 import { ProfileComponent } from './features/profile/profile.component';
 import { ConcertListComponent } from './features/concert-list/concert-list.component';
 import { RegisterComponent } from './features/register/register.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { ConcertDetailComponent } from './features/concert-detail/concert-detail.component';
-import { AuthGuard } from './core/guards/auth.guard';
 import { AdminDashboardComponent } from './features/admin-dashboard/admin-dashboard.component';
 
 

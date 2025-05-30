@@ -16,6 +16,7 @@ export class AdminDashboardComponent implements OnInit {
   editMode = false;
   editingId: number | null = null;
   error = '';
+  showForm = false;
 
   constructor(private authService: AuthService) {}
 
@@ -59,6 +60,10 @@ export class AdminDashboardComponent implements OnInit {
         error: () => this.error = 'Erro ao criar concerto.'
       });
     }
+  }
+
+  toggleForm() {
+    this.showForm = !this.showForm;
   }
 
   editConcert(c: any) {

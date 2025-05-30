@@ -4,7 +4,7 @@ from auth_utils import token_required
 
 interaction_bp = Blueprint("interaction", __name__, url_prefix="/api/concerts")
 
-
+#region Concerts
 # 🔢 GET /api/concerts/<id>/likes - Número de likes
 @interaction_bp.route("/<int:concert_id>/likes", methods=["GET"])
 def get_likes(concert_id):
@@ -50,10 +50,9 @@ def get_comments(concert_id):
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+#endregion
 
-    # 🔢 GET /api/users/favorites - lista favoritos do user
-
-
+# 🔢 GET /api/users/favorites - lista favoritos do user
 @interaction_bp.route("/users/favorites", methods=["GET"])
 @token_required
 def list_favorites(user):

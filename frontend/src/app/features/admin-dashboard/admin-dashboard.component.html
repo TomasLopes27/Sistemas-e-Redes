@@ -2,24 +2,36 @@
 
 <p *ngIf="error" class="error">{{ error }}</p>
 
-<form (ngSubmit)="saveConcert()">
-  <label>Título: <input [(ngModel)]="newConcert.title" name="title" required /></label><br />
-  <label>URL do YouTube: <input [(ngModel)]="newConcert.url" name="url" required /></label><br />
-  <label>Artista: <input [(ngModel)]="newConcert.artist" name="artist" required /></label><br />
-  <label>Género: <input [(ngModel)]="newConcert.genre" name="genre" required /></label><br />
-  <label>Data: <input [(ngModel)]="newConcert.release_date" name="release_date" type="date" required /></label><br />
-  <label>Imagem URL: <input [(ngModel)]="newConcert.image_url" name="image_url" /></label><br />
+<button (click)="toggleForm()" class="btn-toggle-form">
+  {{ showForm ? 'Fechar formulário' : 'Criar Vídeo' }}
+</button>
 
-  <button type="submit">{{ editMode ? 'Atualizar' : 'Criar' }}</button>
-  <button type="button" (click)="resetForm()" *ngIf="editMode">Cancelar</button>
-</form>
+<div *ngIf="showForm">
+  <form (ngSubmit)="saveConcert()">
+    <form (ngSubmit)="saveConcert()">
+      <label>Título: <input [(ngModel)]="newConcert.title" name="title" required /></label><br />
+      <label>URL do YouTube: <input [(ngModel)]="newConcert.url" name="url" required /></label><br />
+      <label>Artista: <input [(ngModel)]="newConcert.artist" name="artist" required /></label><br />
+      <label>Género: <input [(ngModel)]="newConcert.genre" name="genre" required /></label><br />
+      <label>Data: <input [(ngModel)]="newConcert.release_date" name="release_date" type="date"
+          required /></label><br />
+      <label>Imagem URL: <input [(ngModel)]="newConcert.image_url" name="image_url" /></label><br />
+
+      <button type="submit">{{ editMode ? 'Atualizar' : 'Criar' }}</button>
+      <button type="button" (click)="resetForm()" *ngIf="editMode">Cancelar</button>
+    </form>
+  </form>
+</div>
 
 <hr />
 
 <ul>
   <li *ngFor="let c of concerts">
-    <strong>{{ c.title }}</strong> - {{ c.artist }}
-    <button (click)="editConcert(c)">✏️ Editar</button>
-    <button (click)="deleteConcert(c.id)">🗑️ Apagar</button>
+    <strong>{{ c.title }}</strong>
+    <span class="artist">{{ c.artist }}</span>
+    <div class="btn-container">
+      <button (click)="editConcert(c)">✏️ Editar</button>
+      <button (click)="deleteConcert(c.id)">🗑️ Apagar</button>
+    </div>
   </li>
 </ul>

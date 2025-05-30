@@ -2,7 +2,8 @@ import pandas as pd
 from db import get_connection
 
 # Lê o ficheiro CSV
-df = pd.read_csv(r"C:\Users\tomas\Desktop\Redes\Sistemas-e-Redes\backend\tinyConcertsALL.csv")
+# df = pd.read_csv(r"C:\Users\tomas\Desktop\Redes\Sistemas-e-Redes\backend\tinyConcertsALL.csv")
+df = pd.read_csv(r"C:\repos\Sistemas-e-Redes\backend\tinyConcertsALL.csv")
 
 # Extrai o nome do artista e o género
 df["artist"] = df["title"].str.split(":").str[0].str.strip()

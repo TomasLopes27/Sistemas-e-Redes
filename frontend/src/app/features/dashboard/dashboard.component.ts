@@ -4,6 +4,8 @@ import { RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { Component, OnInit } from '@angular/core';
 
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../dialogs/confirm-dialog/confirm-dialog.component';
 
 @Component({
   standalone: true,
@@ -17,7 +19,11 @@ import { Component, OnInit } from '@angular/core';
 export class DashboardComponent implements OnInit {
   isAdmin = false;
 
-  constructor(public authService: AuthService, private router: Router) {}
+  constructor(
+    public authService: AuthService, 
+    private router: Router,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit() {
     
@@ -30,9 +36,18 @@ export class DashboardComponent implements OnInit {
   }
 
   logout() {
-    this.authService.logout();
-    this.router.navigate(['/login']);
-  }
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      disableClose: true,  // opcional: não permite fechar clicando fora
+      autoFocus: false     // opcional: evita foco automático
+    });
 
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed) {
+        this.authService.logout();
+        this.router.navigate(['/login']);
+      }
+    });
+  }
 
 }

@@ -4,7 +4,7 @@ from db import get_connection
 
 user_bp = Blueprint("user", __name__, url_prefix="/api")
 
-
+#region Profiles
 @user_bp.route("/profile", methods=["PUT"])
 @token_required
 def update_profile(user):
@@ -30,3 +30,4 @@ def update_profile(user):
         return jsonify({"message": "Perfil atualizado com sucesso"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+#endregion

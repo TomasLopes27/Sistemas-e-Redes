@@ -23,6 +23,10 @@ export class ProfileComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit() {
+    this.loadProfileData();
+  }
+
+  loadProfileData() {
     this.authService.getProfile().subscribe({
       next: (res) => {
         this.name = res.name;
@@ -53,6 +57,7 @@ export class ProfileComponent implements OnInit {
       next: () => {
         this.editMode = false;
         alert('Perfil atualizado com sucesso!');
+        this.loadProfileData();
       },
       error: () => {
         this.error = 'Erro ao atualizar perfil.';

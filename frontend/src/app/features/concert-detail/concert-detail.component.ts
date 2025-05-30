@@ -4,6 +4,8 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { AuthService } from '../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { ReportDialogComponent } from '../dialogs/report-dialog/report-dialog.component';
 
 @Component({
   selector: 'app-concert-detail',
@@ -20,13 +22,15 @@ export class ConcertDetailComponent implements OnInit {
   newComment = '';
   liked = false;
   favorited = false;
+  reported = false;
   likeCount = 0;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private sanitizer: DomSanitizer,
-    private authService: AuthService
+    private authService: AuthService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -107,19 +111,33 @@ export class ConcertDetailComponent implements OnInit {
     });
   }
 
-toggleLike() {
-  this.authService.toggleLike(this.concert.id).subscribe({
-    next: () => {
-      this.liked = !this.liked;
-      this.likeCount += this.liked ? 1 : -1;
-    }
-  });
-}
+  toggleLike() {
+    this.authService.toggleLike(this.concert.id).subscribe({
+      next: () => {
+        this.liked = !this.liked;
+        this.likeCount += this.liked ? 1 : -1;
+      }
+    });
+  }
 
 
   toggleFavorite() {
     this.authService.toggleFavorite(this.concert.id).subscribe({
       next: () => this.favorited = !this.favorited
+    });
+  }
+
+  toggleReport() {
+    const dialogRef = this.dialog.open(ReportDialogComponent, {
+      width: '400px',
+    });
+
+    dialogRef.afterClosed().subscribe(description => {
+      if (description) {
+        // Aqui você recebe a descrição do report
+        console.log('Report enviado:', description);
+        // Faça aqui a chamada para backend ou lógica para registrar o report
+      }
     });
   }
 }
