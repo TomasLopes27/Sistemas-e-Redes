@@ -44,6 +44,6 @@ jobs:
           projectBaseDir: .
           args: >
             -Dsonar.projectKey=TomasLopes27_Sistemas-e-Redes
-            -Dsonar.organization=TomasLopes27
+            -Dsonar.organization=tomaslopes27
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
