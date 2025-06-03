@@ -42,7 +42,8 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@v2
         with:
           projectBaseDir: .
+          args: >
+            -Dsonar.projectKey=TomasLopes27_Sistemas-e-Redes
+            -Dsonar.organization=TomasLopes27
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_PROJECT_KEY: TomasLopes27_Sistemas-e-Redes
-          SONAR_ORGANIZATION: TomasLopes27
