@@ -6,9 +6,12 @@ from routes.admin_users import admin_bp
 from routes.user_routes import user_bp
 from flask_cors import CORS
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "asdfe"
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
 CORS(
     app,
