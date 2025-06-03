@@ -1,28 +1,47 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input'; // para o textarea
 
 @Component({
   selector: 'app-report-dialog',
   standalone: true,
-  imports: [FormsModule, MatDialogModule, MatButtonModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule
+  ],
   templateUrl: './report-dialog.component.html',
 })
 export class ReportDialogComponent {
-  reportDescription: string = '';  
+  reportDescription: string = '';
+  selectedIssueType: string = '';
 
-  constructor(
-    public dialogRef: MatDialogRef<ReportDialogComponent>
-  ) {}
+  issueTypes = [
+    { value: 'inapropriado', label: 'Inapropriado' },
+    { value: 'spam', label: 'Spam' },
+    { value: 'conteudo_errado', label: 'Conteúdo Errado' },
+    { value: 'outro', label: 'Outro' }
+  ];
+
+  constructor(public dialogRef: MatDialogRef<ReportDialogComponent>) {}
 
   onCancel() {
     this.dialogRef.close(false);
   }
 
   onSubmit() {
-    this.dialogRef.close(this.reportDescription);
+    this.dialogRef.close({
+      description: this.reportDescription,
+      issue_type: this.selectedIssueType
+    });
   }
 }
-
