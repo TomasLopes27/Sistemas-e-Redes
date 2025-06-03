@@ -20,7 +20,7 @@ export class ProfileComponent implements OnInit {
   likedConcerts: any[] = [];
   favoriteConcerts: any[] = [];
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private readonly authService: AuthService, private readonly router: Router) {}
 
   ngOnInit() {
     this.loadProfileData();

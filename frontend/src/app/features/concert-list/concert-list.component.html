@@ -22,7 +22,7 @@
     <a [routerLink]="['/concerts', concert.id]">
       <img
         [src]="concert.image_url"
-        alt="Imagem do concerto"
+        alt="Concerto de {{ concert.artist }} - {{ concert.title }}"
         width="360"
         height="202"
         style="cursor: pointer; border-radius: 8px;" />

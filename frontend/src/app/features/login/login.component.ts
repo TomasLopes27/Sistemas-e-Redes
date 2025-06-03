@@ -22,7 +22,7 @@ export class LoginComponent {
   password = '';
   error = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private readonly authService: AuthService, private readonly router: Router) {}
 
   login() {
   this.authService.login(this.email, this.password).subscribe({

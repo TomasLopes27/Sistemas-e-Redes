@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
@@ -13,7 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 export class ConfirmDialogComponent {
   @Output() confirmed = new EventEmitter<boolean>();
 
-  constructor(private dialogRef: MatDialogRef<ConfirmDialogComponent>) {}
+  constructor(private readonly dialogRef: MatDialogRef<ConfirmDialogComponent>) {}
 
   confirm() {
     this.confirmed.emit(true);

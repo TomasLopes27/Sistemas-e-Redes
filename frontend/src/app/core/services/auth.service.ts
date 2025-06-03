@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { tap } from 'rxjs/operators';
-import { log } from 'node:console';
 
 
 
@@ -122,12 +119,6 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/concerts/${id}/comment`, { content }, {
       headers: this.getHeaders()
     });
-  }
-
-  updateComment(id: string | number, content: string) {
-    return this.http.post(`${this.apiUrl}/concerts/${id}/comment`, { content }, {
-       headers: this.getHeaders()
-     });
   }
   //#endregion
 
