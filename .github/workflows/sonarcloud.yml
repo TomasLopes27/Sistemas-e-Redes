@@ -50,5 +50,7 @@ jobs:
           args: >
             -Dsonar.projectKey=TomasLopes27_Sistemas-e-Redes
             -Dsonar.organization=tomaslopes27
+            -Dsonar.python.coverage.reportPaths=coverage.xml
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
