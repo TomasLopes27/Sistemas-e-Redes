@@ -48,4 +48,4 @@ def test_login_user(client):
 
         assert response.status_code == 200
         data = response.get_json()
-        assert "token" in data    
+        assert "token" in data
