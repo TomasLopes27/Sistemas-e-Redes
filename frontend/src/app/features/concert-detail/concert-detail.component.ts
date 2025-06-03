@@ -132,11 +132,11 @@ export class ConcertDetailComponent implements OnInit {
       width: '400px',
     });
 
-    dialogRef.afterClosed().subscribe(description => {
-      if (description) {
-        // Aqui você recebe a descrição do report
-        console.log('Report enviado:', description);
-        // Faça aqui a chamada para backend ou lógica para registrar o report
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('Report enviado:', result);
+        // Exemplo:
+        // this.api.sendReport(result).subscribe(...)
       }
     });
   }
