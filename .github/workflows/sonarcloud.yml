@@ -38,6 +38,11 @@ jobs:
           cd frontend
           npm install
 
+      - name: Run Pytest and generate coverage report
+        run: |
+          cd backend
+          pytest tests --cov=routes --cov-report=xml:../coverage.xml
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         with:
