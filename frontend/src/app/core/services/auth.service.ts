@@ -12,9 +12,11 @@ import { log } from 'node:console';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = environment.apiUrl;
+  private readonly apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+
+  constructor(private readonly http: HttpClient) {}
+
 
   //#region Login
   login(email: string, password: string): Observable<any> {
@@ -123,9 +125,9 @@ export class AuthService {
   }
 
   updateComment(id: string | number, content: string) {
-    // return this.http.post(`${this.apiUrl}/concerts/${id}/comment`, { content }, {
-    //   headers: this.getHeaders()
-    // });
+    return this.http.post(`${this.apiUrl}/concerts/${id}/comment`, { content }, {
+       headers: this.getHeaders()
+     });
   }
   //#endregion
 

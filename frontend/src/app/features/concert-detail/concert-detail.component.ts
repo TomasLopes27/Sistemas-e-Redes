@@ -26,11 +26,11 @@ export class ConcertDetailComponent implements OnInit {
   likeCount = 0;
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private sanitizer: DomSanitizer,
-    private authService: AuthService,
-    private dialog: MatDialog
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly sanitizer: DomSanitizer,
+    private readonly authService: AuthService,
+    private readonly dialog: MatDialog
   ) {}
 
   ngOnInit() {

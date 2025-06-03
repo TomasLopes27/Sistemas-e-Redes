@@ -79,7 +79,7 @@ def login():
                 {
                     "user_id": user[0],
                     "usertype": user[2],
-                    "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1),
+                    "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1),
                 },
                 current_app.config["SECRET_KEY"],
                 algorithm="HS256",

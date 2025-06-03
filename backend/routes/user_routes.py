@@ -23,7 +23,7 @@ def update_profile(user):
             UPDATE users SET name = %s, email = %s WHERE id = %s
         """,
             (name, email, user[0]),
-        )  # user[0] = ID
+        )
         conn.commit()
         cur.close()
         conn.close()

@@ -19,7 +19,7 @@ export class ConcertListComponent implements OnInit {
   currentPage = 1;
   concertsPerPage = 5;
 
-  constructor(private authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
   openVideo(url: string) {
   const fullUrl = url.startsWith('http') ? url : `https://www.youtube.com/watch?v=${url}`;

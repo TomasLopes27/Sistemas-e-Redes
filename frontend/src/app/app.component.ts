@@ -15,7 +15,7 @@ import { AuthService } from './core/services/auth.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  constructor(public authService: AuthService, private router: Router) {}
+  constructor(public authService: AuthService, private readonly router: Router) {}
 
   logout() {
     this.authService.logout();

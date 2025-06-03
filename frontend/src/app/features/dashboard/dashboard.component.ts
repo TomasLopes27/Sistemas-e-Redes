@@ -21,8 +21,8 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     public authService: AuthService, 
-    private router: Router,
-    private dialog: MatDialog
+    private readonly router: Router,
+    private readonly dialog: MatDialog
   ) {}
 
   ngOnInit() {

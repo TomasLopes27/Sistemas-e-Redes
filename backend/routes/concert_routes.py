@@ -4,6 +4,8 @@ from auth_utils import token_required
 
 concert_bp = Blueprint("concert", __name__, url_prefix="/api/concerts")
 
+ACCESS_DENIED_ADMIN_MSG = "Acesso negado: apenas admin"
+
 
 # 🔍 GET /api/concerts - listar todos
 @concert_bp.route("/", methods=["GET"])
@@ -73,7 +75,8 @@ def get_concert(concert_id):
 @token_required
 def create_concert(user):
     if user[3] != 0:
-        return jsonify({"error": "Acesso negado: apenas admin"}), 403
+        return jsonify({"error": ACCESS_DENIED_ADMIN_MSG}), 403
+
 
     data = request.get_json()
     try:
@@ -106,7 +109,8 @@ def create_concert(user):
 @token_required
 def update_concert(user, concert_id):
     if user[3] != 0:
-        return jsonify({"error": "Acesso negado: apenas admin"}), 403
+        return jsonify({"error": ACCESS_DENIED_ADMIN_MSG}), 403
+
 
     data = request.get_json()
     try:
@@ -141,7 +145,8 @@ def update_concert(user, concert_id):
 @token_required
 def delete_concert(user, concert_id):
     if user[3] != 0:
-        return jsonify({"error": "Acesso negado: apenas admin"}), 403
+        return jsonify({"error": ACCESS_DENIED_ADMIN_MSG}), 403
+
 
     try:
         conn = get_connection()

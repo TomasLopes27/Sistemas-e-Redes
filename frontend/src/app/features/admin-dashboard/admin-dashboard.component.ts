@@ -18,7 +18,7 @@ export class AdminDashboardComponent implements OnInit {
   error = '';
   showForm = false;
 
-  constructor(private authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
   ngOnInit() {
     this.loadConcerts();
