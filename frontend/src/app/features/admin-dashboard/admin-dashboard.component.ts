@@ -17,6 +17,9 @@ export class AdminDashboardComponent implements OnInit {
   editingId: number | null = null;
   error = '';
   showForm = false;
+  reportedConcerts: any[] = [];  // Lista dos concertos reportados
+  showReported: boolean = false;  // Flag para alternar entre os concertos
+
 
   constructor(private readonly authService: AuthService) {}
 
@@ -36,10 +39,24 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   loadConcerts() {
-    this.authService.getConcerts().subscribe({
-      next: res => this.concerts = res,
-      error: () => this.error = 'Erro ao carregar concertos.'
-    });
+    if (this.showReported) {
+      // Carrega os concertos reportados
+      this.authService.getReportedConcerts().subscribe({
+        next: res => this.reportedConcerts = res,
+        error: () => this.error = 'Erro ao carregar concertos reportados.'
+      });
+    } else {
+      // Carrega todos os concertos
+      this.authService.getConcerts().subscribe({
+        next: res => this.concerts = res,
+        error: () => this.error = 'Erro ao carregar concertos.'
+      });
+    }
+  }
+
+  toggleReportedConcerts() {
+    this.showReported = !this.showReported;  
+    this.loadConcerts();
   }
 
   saveConcert() {

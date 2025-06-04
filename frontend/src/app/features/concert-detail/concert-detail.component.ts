@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ReportDialogComponent } from '../dialogs/report-dialog/report-dialog.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-concert-detail',
@@ -30,65 +31,64 @@ export class ConcertDetailComponent implements OnInit {
     private readonly router: Router,
     private readonly sanitizer: DomSanitizer,
     private readonly authService: AuthService,
-    private readonly dialog: MatDialog
-  ) {}
+    private readonly dialog: MatDialog,
+    private snackBar: MatSnackBar
+  ) { }
 
   ngOnInit() {
-  const id = this.route.snapshot.paramMap.get('id');
-  if (!id) {
-    console.error('❌ ID de concerto ausente da rota');
-    return;
-  }
-
-  console.log('🔍 ID recebido:', id);
-
-  this.authService.getConcertById(id).subscribe({
-    next: (data) => {
-      console.log('🎶 Concerto recebido do backend:', data); 
-
-      this.concert = data;
-      const videoId = this.extractVideoId(this.concert.url);
-      this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-        `https://www.youtube.com/embed/${videoId}`
-      );
-
-      // Comentários
-      this.authService.getComments(id).subscribe((res) => this.comments = res);
-
-      // Total de likes
-      this.authService.getLikes(id).subscribe({
-        next: (res) => this.likeCount = res.likes,
-        error: () => this.likeCount = 0
-      });
-
-      // Likes e favoritos
-      this.authService.getUserLikes().subscribe({
-        next: (likes) => {
-          this.liked = likes.some(c => c.id === this.concert.id);
-        },
-        error: () => {
-          this.liked = false;
-        }
-      });
-
-      this.authService.getUserFavorites().subscribe({
-        next: (favs) => {
-          this.favorited = favs.some(c => c.id === this.concert.id);
-        },
-        error: () => {
-          this.favorited = false;
-        }
-      });
-
-    },
-    error: (err) => {
-      console.error('❌ Erro ao carregar concerto:', err);
-      this.error = 'Erro ao carregar concerto.';
+    const id = this.route.snapshot.paramMap.get('id');
+    if (!id) {
+      console.error('❌ ID de concerto ausente da rota');
+      return;
     }
-  });
-}
 
+    console.log('🔍 ID recebido:', id);
 
+    this.authService.getConcertById(id).subscribe({
+      next: (data) => {
+        console.log('🎶 Concerto recebido do backend:', data);
+
+        this.concert = data;
+        const videoId = this.extractVideoId(this.concert.url);
+        this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+          `https://www.youtube.com/embed/${videoId}`
+        );
+
+        // Comentários
+        this.authService.getComments(id).subscribe((res) => this.comments = res);
+
+        // Total de likes
+        this.authService.getLikes(id).subscribe({
+          next: (res) => this.likeCount = res.likes,
+          error: () => this.likeCount = 0
+        });
+
+        // Likes e favoritos
+        this.authService.getUserLikes().subscribe({
+          next: (likes) => {
+            this.liked = likes.some(c => c.id === this.concert.id);
+          },
+          error: () => {
+            this.liked = false;
+          }
+        });
+
+        this.authService.getUserFavorites().subscribe({
+          next: (favs) => {
+            this.favorited = favs.some(c => c.id === this.concert.id);
+          },
+          error: () => {
+            this.favorited = false;
+          }
+        });
+
+      },
+      error: (err) => {
+        console.error('❌ Erro ao carregar concerto:', err);
+        this.error = 'Erro ao carregar concerto.';
+      }
+    });
+  }
 
   extractVideoId(url: string): string {
     if (url.startsWith('http')) {
@@ -134,9 +134,28 @@ export class ConcertDetailComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log('Report enviado:', result);
-        // Exemplo:
-        // this.api.sendReport(result).subscribe(...)
+        const payload = {
+          issue_type: result.issue_type,
+          description: result.description
+        };
+
+        this.authService.toggleReport(this.concert.id, payload).subscribe({
+          next: () => {
+            this.snackBar.open('Report enviado com sucesso!', 'Fechar', {
+              duration: 3000,
+              horizontalPosition: 'right',
+              verticalPosition: 'top'
+            });
+          },
+          error: (err) => {
+            console.error('Erro ao enviar report:', err);
+            this.snackBar.open('Erro ao enviar report.', 'Fechar', {
+              duration: 3000,
+              horizontalPosition: 'right',
+              verticalPosition: 'top'
+            });
+          }
+        });
       }
     });
   }

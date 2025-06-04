@@ -4,7 +4,7 @@ from auth_utils import token_required
 
 interaction_bp = Blueprint("interaction", __name__, url_prefix="/api/concerts")
 
-#region Concerts
+#region GET
 # 🔢 GET /api/concerts/<id>/likes - Número de likes
 @interaction_bp.route("/<int:concert_id>/likes", methods=["GET"])
 def get_likes(concert_id):
@@ -139,7 +139,47 @@ def list_reports(user, concert_id):
 
     return jsonify(reports), 200
 
+@interaction_bp.route("/reported-concerts", methods=["GET"])
+@token_required
+def get_reported_concerts(user):
+    if user[3] != 0:  # Verifica se o usuário é admin
+        return jsonify({"error": "Acesso negado: só admin"}), 403
 
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+
+        # Consulta SQL agora inclui os dados do report
+        cur.execute("""
+            SELECT DISTINCT c.id, c.title, c.artist, r.issue_type, r.description, r.created_at
+            FROM concerts c
+            JOIN reports r ON c.id = r.concert_id
+        """)
+        
+        rows = cur.fetchall()
+        cur.close()
+        conn.close()
+
+        data = [
+            {
+                "concert_id": row[0],
+                "title": row[1],
+                "artist_name": row[2],
+                "issue_type": row[3],
+                "description": row[4],
+                "created_at": row[5]
+            }
+            for row in rows
+        ]
+
+        return jsonify(data), 200
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"error": "Erro interno do servidor!"}), 500
+
+#endregion
+#region POST
 # ➕ POST /api/concerts/<id>/like - Like/Unlike (toggle)
 @interaction_bp.route("/<int:concert_id>/like", methods=["POST"])
 @token_required
@@ -265,7 +305,11 @@ def report_issue(user, concert_id):
     conn.close()
     return jsonify({"message": "Report enviado. Obrigado pelo feedback!"}), 201
 
+#endregion
 
+#region METODOS
 # Função utilitária para extrair o ID do utilizador
 def get_user_id(user_tuple):
     return user_tuple[0]  # id do utilizador
+
+#endregion

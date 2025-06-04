@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { log } from 'node:console';
 
 
 
@@ -155,6 +156,23 @@ export class AuthService {
   //#endregion
 
   //#region Reports
+
+  // Método para listar todos os concertos com reports:
+  getReportedConcerts(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/concerts/reported-concerts`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  toggleReport(concertId: number, payload: { issue_type: string, description: string }) {
+    console.log('fafa', payload)
+    return this.http.post(
+      `${this.apiUrl}/concerts/${concertId}/report`,
+      payload,
+      { headers: this.getHeaders() }
+    );
+  }
+
   
   //#endregion
 }

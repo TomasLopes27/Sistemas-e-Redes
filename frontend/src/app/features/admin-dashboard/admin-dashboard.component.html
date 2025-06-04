@@ -2,36 +2,63 @@
 
 <p *ngIf="error" class="error">{{ error }}</p>
 
+<!-- Botão para abrir/fechar o formulário de criação de vídeo -->
 <button (click)="toggleForm()" class="btn-toggle-form">
   {{ showForm ? 'Fechar formulário' : 'Criar Vídeo' }}
 </button>
 
+<!-- Botão para alternar entre todos os concertos e os reportados -->
+<button class="btn-report" (click)="toggleReportedConcerts()">
+  {{ showReported ? 'Ver Todos os Concertos' : 'Ver Concertos Reportados' }}
+</button>
+
+<!-- Formulário de criação de vídeo -->
 <div *ngIf="showForm">
   <form (ngSubmit)="saveConcert()">
-    <form (ngSubmit)="saveConcert()">
-      <label>Título: <input [(ngModel)]="newConcert.title" name="title" required /></label><br />
-      <label>URL do YouTube: <input [(ngModel)]="newConcert.url" name="url" required /></label><br />
-      <label>Artista: <input [(ngModel)]="newConcert.artist" name="artist" required /></label><br />
-      <label>Género: <input [(ngModel)]="newConcert.genre" name="genre" required /></label><br />
-      <label>Data: <input [(ngModel)]="newConcert.release_date" name="release_date" type="date"
-          required /></label><br />
-      <label>Imagem URL: <input [(ngModel)]="newConcert.image_url" name="image_url" /></label><br />
+    <label>Título: <input [(ngModel)]="newConcert.title" name="title" required /></label><br />
+    <label>URL do YouTube: <input [(ngModel)]="newConcert.url" name="url" required /></label><br />
+    <label>Artista: <input [(ngModel)]="newConcert.artist" name="artist" required /></label><br />
+    <label>Género: <input [(ngModel)]="newConcert.genre" name="genre" required /></label><br />
+    <label>Data: <input [(ngModel)]="newConcert.release_date" name="release_date" type="date" required /></label><br />
+    <label>Imagem URL: <input [(ngModel)]="newConcert.image_url" name="image_url" /></label><br />
 
-      <button type="submit">{{ editMode ? 'Atualizar' : 'Criar' }}</button>
-      <button type="button" (click)="resetForm()" *ngIf="editMode">Cancelar</button>
-    </form>
+    <button type="submit">{{ editMode ? 'Atualizar' : 'Criar' }}</button>
+    <button type="button" (click)="resetForm()" *ngIf="editMode">Cancelar</button>
   </form>
 </div>
 
 <hr />
 
-<ul>
-  <li *ngFor="let c of concerts">
-    <strong>{{ c.title }}</strong>
-    <span class="artist">{{ c.artist }}</span>
-    <div class="btn-container">
-      <button (click)="editConcert(c)">✏️ Editar</button>
-      <button (click)="deleteConcert(c.id)">🗑️ Apagar</button>
-    </div>
-  </li>
-</ul>
+<!-- Se estiver a mostrar apenas os concertos reportados -->
+<div *ngIf="showReported">
+  <h3>Concertos Reportados</h3>
+  <ul>
+    <li *ngFor="let c of reportedConcerts">
+      <strong>{{ c.title }}</strong>
+      <span class="artist">{{ c.artist_name }}</span>
+      <div>
+        <p><strong>Tipo de Issue:</strong> {{ c.issue_type }}</p>
+        <p><strong>Descrição:</strong> {{ c.description }}</p>
+        <p><strong>Data:</strong> {{ c.created_at | date: 'short' }}</p>
+      </div>
+      <div class="btn-container">
+        <button (click)="deleteConcert(c.concert_id)">🗑️ Apagar</button>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<!-- Caso contrário, exibe todos os concertos -->
+<div *ngIf="!showReported">
+  <h3>Todos os Concertos</h3>
+  <ul>
+    <li *ngFor="let c of concerts">
+      <strong>{{ c.title }}</strong>
+      <span class="artist">{{ c.artist }}</span>
+      <div class="btn-container">
+        <button (click)="editConcert(c)">✏️ Editar</button>
+        <button (click)="deleteConcert(c.id)">🗑️ Apagar</button>
+      </div>
+    </li>
+  </ul>
+</div>
